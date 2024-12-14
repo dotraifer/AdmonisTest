@@ -3,7 +3,8 @@
 This project is a solution to the Admonis homework assignment,
 where the goal is to parse product data from an XML file,
 map it to AdmonisProduct and AdmonisProductOption objects,
-and output a structured list of products with their variants to a var called results.
+and output a structured list of products with their variants to a var called results, 
+and then write them to a json in the desired path.
 
 ## How to Run
 

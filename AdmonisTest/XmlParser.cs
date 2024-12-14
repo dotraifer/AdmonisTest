@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using AdmonisTest.Admonis;
+using Serilog;
 
 namespace AdmonisTest
 {
     /// <summary>
-    ///     Responsible for parsing product XML data into Admonis objects.
+    /// Responsible for parsing product XML data into Admonis objects.
     /// </summary>
     public class XmlParser
     {
@@ -34,7 +35,9 @@ namespace AdmonisTest
         {
             // filter variants products
             var products = _products
-                .Where(productKvp => productKvp.Value.Element(GetElementPath("variations")) != null);
+                .Where(productKvp => productKvp.Value.Element(
+                    GetElementPath("variations")) != null).ToList();
+            Log.Information("Found {TotalProducts} total Admonis products", products.Count);
             return products.Select(productKvp => CreateAdmonisProduct(productKvp.Value)).ToList();
         }
 
@@ -74,9 +77,9 @@ namespace AdmonisTest
                 VolumeType = product.Element(GetElementPath("volume-type"))?.Value,
                 VideoLink =
                     customAttributes
-                        .FirstOrDefault(attr => attr.Attribute("attribute-id")
-                                                    ?.Value ==
-                                                "f54ProductVideo")
+                        .FirstOrDefault(customAttribute => customAttribute.Attribute("attribute-id")
+                                                               ?.Value ==
+                                                           "f54ProductVideo")
                         ?.Value,
                 StorageLocation = product.Element(GetElementPath("storage-location"))?.Value
             };
@@ -120,14 +123,16 @@ namespace AdmonisTest
                 optionSugName1Title =
                     productOption.Element(GetElementPath("option-sug-name-1-title"))?.Value ?? "בחר צבע",
                 ProductMakat = product.Makat,
-                optionMakat = productOption.Element(GetElementPath("option-maket"))?.Value,
+                optionMakat = productOption.Element(GetElementPath("option-makat"))?.Value,
                 optionSugName2 = customAttributes
-                    .FirstOrDefault(x => (string)x.Attribute("attribute-id") == "f54ProductColor")
+                    .FirstOrDefault(customAttribute =>
+                        (string)customAttribute.Attribute("attribute-id") == "f54ProductColor")
                     ?.Value,
                 optionSugName2Title = productOption.Element(GetElementPath("option-sug-name-2-title"))?.Value ??
                                       "בחר מידה",
                 optionName = customAttributes
-                    .FirstOrDefault(x => (string)x.Attribute("attribute-id") == "f54ProductSize")
+                    .FirstOrDefault(customAttribute =>
+                        (string)customAttribute.Attribute("attribute-id") == "f54ProductSize")
                     ?.Value,
                 optionModel = productOption.Element(GetElementPath("model"))?.Value,
                 optionPrice_Cost_Customer =
