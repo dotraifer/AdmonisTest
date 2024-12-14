@@ -6,19 +6,14 @@ namespace AdmonisTest
 {
     internal class Program
     {
+        private const string XmlFilePath = "Admonis/Product.xml";
         static void Main(string[] args)
         {
-            const string filePath = "Admonis/Product.xml";
             // xml file loading the XDocument object
-            var xmlDocument = XDocument.Load(filePath);
+            var xmlDocument = XDocument.Load(XmlFilePath);
             
             var xmlParser = new XmlParser(xmlDocument);
-            var sw = new Stopwatch();
-            sw.Start();
             var results = xmlParser.GetProducts();
-            
-            sw.Stop();
-            Console.WriteLine(sw.Elapsed);
         }
     }
 }
